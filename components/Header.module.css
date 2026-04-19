@@ -1,0 +1,65 @@
+.header {
+  height: 64px;
+  background-color: #1e1e1e;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.logoImg {
+  height: 30px;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.avatar {
+  background-color: var(--primary-color);
+  color: #000;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.userRole {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.loginBtn {
+  background-color: var(--primary-color);
+  color: black;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+}

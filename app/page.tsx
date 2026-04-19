@@ -1,66 +1,47 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import React, { useEffect } from 'react';
+import Header from '../components/Header';
+import Controls from '../components/Controls';
+import ProjectTable from '../components/ProjectTable';
+import MapComponent from '../components/Map';
+import Summary from '../components/Summary';
+import { useStore } from '../store/useStore';
+import styles from './page.module.css';
+
+// Importing mock data
+import mockData from '../mock_data.json';
+import { Project } from '../types/project';
 
 export default function Home() {
+  const { setProjects, selectedProjectId } = useStore();
+
+  useEffect(() => {
+    // Cast and set projects
+    setProjects(mockData as Project[]);
+  }, [setProjects]);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={styles.main}>
+      <Header />
+      <div className={styles.content}>
+        <div className={styles.leftColumn}>
+          <Controls />
+          
+          <div className={styles.layoutSwitcher}>
+            <div className={selectedProjectId ? styles.withMap : styles.fullWidth}>
+               {selectedProjectId && <MapComponent />}
+               <ProjectTable />
+            </div>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        {selectedProjectId && (
+          <aside className={styles.sidebar}>
+            <Summary />
+          </aside>
+        )}
+      </div>
+    </main>
   );
 }

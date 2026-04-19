@@ -1,0 +1,163 @@
+.container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  height: fit-content;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  gap: 20px;
+  position: relative;
+}
+
+.tab {
+  padding: 8px 0;
+  font-size: 14px;
+  color: #888;
+  border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.filterBtn {
+  margin-left: auto;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #666;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.viewAll {
+  font-size: 12px;
+  color: #3b82f6;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #f0f0f0;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #666;
+  font-weight: 600;
+}
+
+.statValue {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 4px 0;
+}
+
+.statSub {
+  font-size: 9px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.circleProgress {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #ff4d4d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin-top: auto;
+}
+
+.circleText {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.tableMini {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.miniHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  font-size: 11px;
+  color: #aaa;
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.miniRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f9f9f9;
+}
+
+.miniProject {
+  display: flex;
+  flex-direction: column;
+}
+
+.miniTitle {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.miniDesc {
+  font-size: 10px;
+  color: #999;
+}
+
+.miniType {
+  font-size: 11px;
+  color: #666;
+}
+
+.miniDate {
+  font-size: 11px;
+  color: #888;
+}

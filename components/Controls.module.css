@@ -1,0 +1,138 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge {
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: normal;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.viewToggle {
+  display: flex;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.iconBtn {
+  padding: 8px 12px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBtn:hover {
+  background-color: #f9f9f9;
+  color: var(--text-main);
+}
+
+.divider {
+  width: 1px;
+  background-color: var(--border-color);
+}
+
+.searchWrapper {
+  position: relative;
+  width: 250px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 16px;
+  padding-right: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--primary-color);
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.sortWrapper {
+  position: relative;
+}
+
+.sortBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #666;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  min-width: 200px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownItem {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+  color: #444;
+}
+
+.dropdownItem:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdownItem.active {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.createBtn {
+  background-color: var(--primary-color);
+  color: #000;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.createBtn:hover {
+  background-color: #ffca28;
+}
