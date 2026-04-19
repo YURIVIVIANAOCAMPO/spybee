@@ -32,9 +32,10 @@ export const useStore = create<AppState>((set, get) => ({
   currentPage: 1,
   itemsPerPage: 10,
   selectedProjectId: null,
-  mapCenter: [-74.006, 40.7128], // Default to something if no projects
+  mapCenter: [-74.006, 40.7128],
   mapZoom: 2,
-  user: { name: 'Marco', role: 'Administrador' }, // Mock logged in user
+  user: { name: 'Marco', role: 'Administrador' },
+
 
 
   setProjects: (projects) => {
@@ -73,15 +74,15 @@ export const useStore = create<AppState>((set, get) => ({
     const { projects, searchQuery, sortBy } = get();
     let filtered = [...projects];
 
-    // Filter by search query
     if (searchQuery) {
       filtered = filtered.filter((p) =>
         p.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Sort
+
     filtered.sort((a, b) => {
+
       if (sortBy === 'alphabetical') {
         return a.title.localeCompare(b.title);
       }

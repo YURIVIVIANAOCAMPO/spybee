@@ -9,7 +9,6 @@ import Summary from '../components/Summary';
 import { useStore } from '../store/useStore';
 import styles from './page.module.css';
 
-// Importing mock data
 import mockData from '../mock_data.json';
 import { Project } from '../types/project';
 
@@ -17,9 +16,9 @@ export default function Home() {
   const { setProjects, selectedProjectId } = useStore();
 
   useEffect(() => {
-    // Cast and set projects
     setProjects(mockData as Project[]);
   }, [setProjects]);
+
 
   return (
     <main className={styles.main}>
