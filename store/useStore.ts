@@ -42,15 +42,9 @@ export const useStore = create<AppState>((set, get) => ({
   setSelectedProject: (projectId) => {
     const project = get().projects.find((p) => p._id === projectId);
     if (project && project.position) {
-      // Si las coordenadas son muy extremas (océano), usamos las del mockup para que se vea el satélite
-      const isOcean = Math.abs(project.position.lat) > 30 && Math.abs(project.position.lng) > 100;
-      const targetCenter: [number, number] = isOcean 
-        ? [-74.1448, 4.6938] // Coordenadas del Mockup (Bogotá)
-        : [project.position.lng, project.position.lat];
-
       set({ 
         selectedProjectId: projectId,
-        mapCenter: targetCenter,
+        mapCenter: [project.position.lng, project.position.lat],
         mapZoom: 15
       });
     } else {

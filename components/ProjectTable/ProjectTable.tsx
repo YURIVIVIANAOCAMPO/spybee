@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './ProjectTable.module.css';
-import { useStore } from '../store/useStore';
+import { useStore } from '../../store/useStore';
 import { Clock, ExternalLink, CloudRain } from 'lucide-react';
 
 const ProjectTable = () => {
-  const { filteredProjects, currentPage, itemsPerPage, setSelectedProject, selectedProjectId } = useStore();
+  const { filteredProjects, currentPage, itemsPerPage, setSelectedProject, selectedProjectId, setCurrentPage } = useStore();
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = filteredProjects.slice(startIndex, startIndex + itemsPerPage);
@@ -36,7 +36,6 @@ const ProjectTable = () => {
             const hasRain = project.position ? isRaining(project.position.lat) : false;
             const plan = getPlanDisplay(project.projectPlanData?.plan);
             
-            // CONTEO REAL (Casting a string para evitar el error de overlap de TS)
             const incidentsCount = project.incidents?.filter(i => (i.item as string) === 'incidents').length || 0;
             const rfiCount = project.incidents?.filter(i => (i.item as string) === 'RFI').length || 0;
             const taskCount = project.incidents?.filter(i => (i.item as string) === 'task' || (i.item as string) === 'tareas').length || 0;
@@ -80,22 +79,22 @@ const ProjectTable = () => {
                       </div>
                     ))}
                     {project.users.length > 5 && (
-                      <div className={styles.team_hexagon_more}>3+</div>
+                      <div className={styles.team_hexagon_more}>+{project.users.length - 5}</div>
                     )}
                   </div>
                 </td>
                 <td className={styles.table_cell}>
                   <div className={styles.metrics_group}>
                     <div className={styles.metric_item}>
-                      <span className={styles.metric_value}>{incidentsCount || 45}</span>
+                      <span className={styles.metric_value}>{incidentsCount}</span>
                       <span className={styles.metric_label}>Incidencias</span>
                     </div>
                     <div className={styles.metric_item}>
-                      <span className={styles.metric_value}>{rfiCount || 45}</span>
+                      <span className={styles.metric_value}>{rfiCount}</span>
                       <span className={styles.metric_label}>RFI</span>
                     </div>
                     <div className={styles.metric_item}>
-                      <span className={styles.metric_value}>{taskCount || 45}</span>
+                      <span className={styles.metric_value}>{taskCount}</span>
                       <span className={styles.metric_label}>Tareas</span>
                     </div>
                   </div>
@@ -106,11 +105,23 @@ const ProjectTable = () => {
         </tbody>
       </table>
 
-      <div className={styles.pagination_container}>
-        <button className={styles.pagination_button} disabled={currentPage === 1} onClick={() => useStore.getState().setCurrentPage(currentPage - 1)}>&lt;</button>
+      <footer className={styles.pagination_container}>
+        <button 
+          className={styles.pagination_button} 
+          disabled={currentPage === 1} 
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          &lt;
+        </button>
         <span className={styles.pagination_info}>Página {currentPage} de {totalPages}</span>
-        <button className={styles.pagination_button} disabled={currentPage === totalPages} onClick={() => useStore.getState().setCurrentPage(currentPage + 1)}>&gt;</button>
-      </div>
+        <button 
+          className={styles.pagination_button} 
+          disabled={currentPage === totalPages} 
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          &gt;
+        </button>
+      </footer>
     </div>
   );
 };

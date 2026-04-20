@@ -1,54 +1,48 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import Header from '../components/Header';
-import Controls from '../components/Controls';
-import ProjectTable from '../components/ProjectTable';
-import MapComponent from '../components/Map';
-import Summary from '../components/Summary';
+import Header from '../components/Header/Header';
+import Controls from '../components/Controls/Controls';
+import ProjectTable from '../components/ProjectTable/ProjectTable';
+import Map from '../components/Map/Map';
+import Summary from '../components/Summary/Summary';
 import { useStore } from '../store/useStore';
-import styles from './page.module.css';
-
 import mockData from '../mock_data.json';
-import { Project } from '../types/project';
+import styles from './page.module.css';
 
 export default function Home() {
   const { setProjects, selectedProjectId } = useStore();
 
   useEffect(() => {
-    // Carga inicial de datos desde el JSON proporcionado
-    setProjects(mockData as Project[]);
+    setProjects(mockData as any);
   }, [setProjects]);
 
   return (
-    <main className={styles.main}>
+    <div className={styles.app_container}>
       <Header />
       
-      <div className={styles.wrapper}>
-        <div className={styles.container}>
-          
-          {/* Fila 1: Título y Controles (Siempre visibles) */}
+      <main className={styles.main_layout}>
+        <section className={styles.content_section}>
           <Controls />
           
-          {/* Fila 2: Dashboard (Solo visible en Pantalla 2 tras selección) */}
-          {selectedProjectId ? (
-            <div className={styles.dashboard_split}>
-                <div className={styles.map_container_box}>
-                  <MapComponent />
-                </div>
-                <div className={styles.summary_sticky_box}>
-                  <Summary />
-                </div>
-            </div>
-          ) : null}
+          <div className={styles.workspace_wrapper}>
+             <div className={`${styles.table_area} ${selectedProjectId ? styles.table_area_split : ''}`}>
+               <ProjectTable />
+             </div>
 
-          {/* Fila 3: Listado de Proyectos (Siempre visible con scroll independiente) */}
-          <div className={styles.table_section}>
-            <ProjectTable />
+             {selectedProjectId && (
+               <div className={styles.details_area}>
+                 <div className={styles.map_container}>
+                    <Map />
+                 </div>
+                 <div className={styles.summary_container}>
+                    <Summary />
+                 </div>
+               </div>
+             )}
           </div>
-
-        </div>
-      </div>
-    </main>
+        </section>
+      </main>
+    </div>
   );
 }

@@ -1,54 +1,73 @@
-.main {
+.app_container {
   min-height: 100vh;
-  background-color: #fcfcfc;
+  display: flex;
+  flex-direction: column;
 }
 
-.wrapper {
-  padding: 24px 48px;
+.main_layout {
+  flex: 1;
   display: flex;
   justify-content: center;
+  padding: 0 40px 40px 40px;
 }
 
-.container {
+.content_section {
   width: 100%;
   max-width: 1600px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
-/* Dashboard Split for Screen 2 */
-.dashboard_split {
-  display: grid;
-  grid-template-columns: 1fr 400px;
+.workspace_wrapper {
+  display: flex;
   gap: 24px;
-  align-items: start; /* Permite que el summary sea sticky */
+  flex: 1;
+  min-height: 0;
 }
 
-.map_container_box {
-  background-color: #eee;
+/* Área de Tabla */
+.table_area {
+  flex: 1;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.table_area_split {
+  flex: 0 0 60%;
+}
+
+/* Área de Detalles (Mapa + Resumen) */
+.details_area {
+  flex: 0 0 calc(40% - 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.5s ease;
+}
+
+.map_container {
+  height: 300px;
+  flex-shrink: 0;
   border-radius: 16px;
   overflow: hidden;
-  height: 480px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.summary_sticky_box {
-  position: sticky;
-  top: 88px; /* Altura del Header + gap */
-  z-index: 10;
+.summary_container {
+  flex: 1;
+  min-height: 0;
 }
 
-.table_section {
-  width: 100%;
-  margin-top: 10px;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
+/* Ajustes para pantallas pequeñas */
 @media (max-width: 1200px) {
-  .dashboard_split {
-    grid-template-columns: 1fr;
+  .table_area_split {
+    flex: 0 0 50%;
   }
-  .summary_sticky_box {
-    position: static;
+  .details_area {
+    flex: 0 0 calc(50% - 24px);
   }
 }
