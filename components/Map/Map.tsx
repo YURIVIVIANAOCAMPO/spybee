@@ -15,6 +15,9 @@ const MapComponent = () => {
   const { filteredProjects, mapCenter, selectedProjectId, setSelectedProject } = useStore();
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Lógica de lluvia consistente con la tabla
+  const isRaining = (lat: number) => Math.floor(lat) % 2 === 0;
+
   useEffect(() => {
     if (!mapContainer.current) return;
 
@@ -56,16 +59,23 @@ const MapComponent = () => {
     markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
 
-    // Pintar marcadores solo para los proyectos filtrados
     filteredProjects.forEach(project => {
       if (!project.position) return;
+
+      const hasRain = isRaining(project.position.lat);
 
       const el = document.createElement('div');
       el.className = styles.marker_container;
       
       const label = document.createElement('div');
       label.className = styles.marker_label;
-      label.innerText = project.title;
+      
+      // Añadir icono de lluvia si aplica
+      if (hasRain) {
+        label.innerHTML = `<span>${project.title}</span> <span style="color: #60a5fa; margin-left: 5px;">🌧️</span>`;
+      } else {
+        label.innerText = project.title;
+      }
 
       const dot = document.createElement('div');
       dot.className = styles.marker_dot;

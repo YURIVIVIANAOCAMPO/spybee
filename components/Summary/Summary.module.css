@@ -41,21 +41,14 @@
   color: var(--spybee-text-muted);
   font-weight: 600;
   cursor: pointer;
+  padding-bottom: 8px;
+  margin-bottom: -9px;
+  transition: all 0.2s ease;
 }
 
 .tab_active {
   color: var(--spybee-yellow);
-  position: relative;
-}
-
-.tab_active::after {
-  content: '';
-  position: absolute;
-  bottom: -9px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--spybee-yellow);
+  border-bottom: 2px solid var(--spybee-yellow);
 }
 
 .filter_pill {
@@ -215,4 +208,45 @@
   align-items: center;
   justify-content: flex-end;
   gap: 2px;
+}
+
+/* Updates Area */
+.updates_area {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.update_item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.update_icon {
+  width: 28px;
+  height: 28px;
+  background-color: #fffbeb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--spybee-yellow);
+}
+
+.update_content {
+  display: flex;
+  flex-direction: column;
+}
+
+.update_text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--spybee-charcoal);
+}
+
+.update_sub {
+  font-size: 11px;
+  color: var(--spybee-text-muted);
 }
