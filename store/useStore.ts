@@ -10,6 +10,7 @@ interface AppState {
   currentPage: number;
   itemsPerPage: number;
   viewMode: 'list' | 'map' | 'grid';
+  isAuthenticated: boolean;
   
   // Map State
   mapCenter: [number, number];
@@ -22,6 +23,8 @@ interface AppState {
   setSortBy: (sort: 'alphabetical' | 'incidents' | 'rfi' | 'tasks') => void;
   setCurrentPage: (page: number) => void;
   setViewMode: (mode: 'list' | 'map' | 'grid') => void;
+  login: () => void;
+  logout: () => void;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -33,6 +36,7 @@ export const useStore = create<AppState>((set, get) => ({
   currentPage: 1,
   itemsPerPage: 10,
   viewMode: 'map',
+  isAuthenticated: false,
   
   mapCenter: [-74.1558, 4.6738], // Centro por defecto (Bogotá)
   mapZoom: 12,
@@ -80,4 +84,6 @@ export const useStore = create<AppState>((set, get) => ({
 
   setCurrentPage: (page) => set({ currentPage: page }),
   setViewMode: (mode) => set({ viewMode: mode }),
+  login: () => set({ isAuthenticated: true }),
+  logout: () => set({ isAuthenticated: false, selectedProjectId: null }),
 }));
