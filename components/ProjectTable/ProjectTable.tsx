@@ -12,7 +12,7 @@ const ProjectTable = () => {
 
   const isRaining = (lat: number) => Math.floor(lat) % 2 === 0;
 
-  const getPlanDisplay = (planKey: string) => {
+  const getPlanDisplay = (planKey?: string) => {
     const p = (planKey || '').toLowerCase();
     if (p === 'small') return { label: 'Pequeño', color: '#d35400' };
     if (p === 'big') return { label: 'Avanzado', color: '#546e7a' };
