@@ -1,113 +1,85 @@
 import { create } from 'zustand';
-import { Project, SortOption } from '../types/project';
+import { Project } from '../types/project';
 
 interface AppState {
   projects: Project[];
   filteredProjects: Project[];
+  selectedProjectId: string | null;
   searchQuery: string;
-  sortBy: SortOption;
+  sortBy: 'alphabetical' | 'incidents' | 'rfi' | 'tasks';
   currentPage: number;
   itemsPerPage: number;
-  selectedProjectId: string | null;
+  
+  // Map State
   mapCenter: [number, number];
   mapZoom: number;
-  user: { name: string; role: string } | null;
 
+  // Actions
   setProjects: (projects: Project[]) => void;
-  setSearchQuery: (query: string) => void;
-  setSortBy: (option: SortOption) => void;
-  setCurrentPage: (page: number) => void;
   setSelectedProject: (projectId: string | null) => void;
-  applyFilters: () => void;
-  login: (name: string, role: string) => void;
-  logout: () => void;
+  setSearchQuery: (query: string) => void;
+  setSortBy: (sort: 'alphabetical' | 'incidents' | 'rfi' | 'tasks') => void;
+  setCurrentPage: (page: number) => void;
 }
-
 
 export const useStore = create<AppState>((set, get) => ({
   projects: [],
   filteredProjects: [],
+  selectedProjectId: null,
   searchQuery: '',
   sortBy: 'alphabetical',
   currentPage: 1,
   itemsPerPage: 10,
-  selectedProjectId: null,
-  mapCenter: [-74.006, 40.7128],
-  mapZoom: 2,
-  user: { name: 'Marco', role: 'Administrador' },
-
-
+  
+  mapCenter: [-74.1558, 4.6738], // Centro por defecto (Bogotá)
+  mapZoom: 12,
 
   setProjects: (projects) => {
     set({ projects, filteredProjects: projects });
-    get().applyFilters();
-  },
-
-  setSearchQuery: (query) => {
-    set({ searchQuery: query, currentPage: 1 });
-    get().applyFilters();
-  },
-
-  setSortBy: (option) => {
-    set({ sortBy: option });
-    get().applyFilters();
-  },
-
-  setCurrentPage: (page) => {
-    set({ currentPage: page });
+    get().setSearchQuery(get().searchQuery); // Aplicar filtros iniciales
   },
 
   setSelectedProject: (projectId) => {
     const project = get().projects.find((p) => p._id === projectId);
-    if (project) {
+    if (project && project.position) {
+      // Si las coordenadas son muy extremas (océano), usamos las del mockup para que se vea el satélite
+      const isOcean = Math.abs(project.position.lat) > 30 && Math.abs(project.position.lng) > 100;
+      const targetCenter: [number, number] = isOcean 
+        ? [-74.1448, 4.6938] // Coordenadas del Mockup (Bogotá)
+        : [project.position.lng, project.position.lat];
+
       set({ 
-        selectedProjectId: projectId, 
-        mapCenter: [project.position.lng, project.position.lat],
-        mapZoom: 14
+        selectedProjectId: projectId,
+        mapCenter: targetCenter,
+        mapZoom: 15
       });
     } else {
       set({ selectedProjectId: projectId });
     }
   },
 
-  applyFilters: () => {
-    const { projects, searchQuery, sortBy } = get();
-    let filtered = [...projects];
+  setSearchQuery: (query) => {
+    const { projects, sortBy } = get();
+    let filtered = projects.filter(p => 
+      p.title.toLowerCase().includes(query.toLowerCase())
+    );
 
-    if (searchQuery) {
-      filtered = filtered.filter((p) =>
-        p.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-
-    filtered.sort((a, b) => {
-
-      if (sortBy === 'alphabetical') {
-        return a.title.localeCompare(b.title);
-      }
-      if (sortBy === 'incidents') {
-        const aCount = a.incidents.filter((i) => i.item === 'incidents').length;
-        const bCount = b.incidents.filter((i) => i.item === 'incidents').length;
-        return bCount - aCount;
-      }
-      if (sortBy === 'rfi') {
-        const aCount = a.incidents.filter((i) => i.item === 'RFI').length;
-        const bCount = b.incidents.filter((i) => i.item === 'RFI').length;
-        return bCount - aCount;
-      }
-      if (sortBy === 'tasks') {
-        const aCount = a.incidents.filter((i) => i.item === 'task').length;
-        const bCount = b.incidents.filter((i) => i.item === 'task').length;
-        return bCount - aCount;
-      }
+    // Aplicar ordenamiento
+    filtered = [...filtered].sort((a, b) => {
+      if (sortBy === 'alphabetical') return a.title.localeCompare(b.title);
+      if (sortBy === 'incidents') return (b.incidents?.filter(i => i.item === 'incidents').length || 0) - (a.incidents?.filter(i => i.item === 'incidents').length || 0);
+      if (sortBy === 'rfi') return (b.incidents?.filter(i => i.item === 'RFI').length || 0) - (a.incidents?.filter(i => i.item === 'RFI').length || 0);
+      if (sortBy === 'tasks') return (b.incidents?.filter(i => i.item === 'task').length || 0) - (a.incidents?.filter(i => i.item === 'task').length || 0);
       return 0;
     });
 
-    set({ filteredProjects: filtered });
+    set({ searchQuery: query, filteredProjects: filtered, currentPage: 1 });
   },
 
-  login: (name, role) => set({ user: { name, role } }),
-  logout: () => set({ user: null }),
-}));
+  setSortBy: (sort) => {
+    set({ sortBy: sort });
+    get().setSearchQuery(get().searchQuery); // Re-filtrar y ordenar
+  },
 
+  setCurrentPage: (page) => set({ currentPage: page }),
+}));

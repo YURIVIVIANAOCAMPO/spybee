@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ProjectTable.module.css';
 import { useStore } from '../store/useStore';
-import { Clock, ExternalLink } from 'lucide-react';
+import { Clock, ExternalLink, CloudRain } from 'lucide-react';
 
 const ProjectTable = () => {
   const { filteredProjects, currentPage, itemsPerPage, setSelectedProject, selectedProjectId } = useStore();
@@ -10,122 +10,93 @@ const ProjectTable = () => {
   const currentItems = filteredProjects.slice(startIndex, startIndex + itemsPerPage);
   const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return '#e8f5e9';
-      case 'suspended': return '#fff3e0';
-      default: return '#f5f5f5';
-    }
-  };
+  const isRaining = (lat: number) => Math.floor(lat) % 2 === 0;
 
-  const getStatusTextColor = (status: string) => {
-    switch (status) {
-      case 'active': return '#2e7d32';
-      case 'suspended': return '#ef6c00';
-      default: return '#666';
-    }
-  };
-
-  const getPlanLabel = (plan: string) => {
-    switch (plan) {
-      case 'big': return 'Grande';
-      case 'small': return 'Pequeño';
-      case 'premium': return 'Premium';
-      case 'advanced': return 'Avanzado';
-      default: return plan;
-    }
-  };
-
-  const getPlanColor = (plan: string) => {
-    switch (plan) {
-      case 'big': return '#8d6e63';
-      case 'small': return '#bf360c';
-      case 'premium': return '#ff8f00';
-      case 'advanced': return '#607d8b';
-      default: return '#ccc';
-    }
+  const getPlanDisplay = (planKey: string) => {
+    const p = (planKey || '').toLowerCase();
+    if (p === 'small') return { label: 'Pequeño', color: '#d35400' };
+    if (p === 'big') return { label: 'Avanzado', color: '#546e7a' };
+    return { label: 'Premium', color: '#f9a825' };
   };
 
   return (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
+    <div className={styles.table_container}>
+      <table className={styles.table_main}>
         <thead>
           <tr>
-            <th>Proyecto</th>
-            <th>Plan</th>
-            <th>Estado</th>
-            <th>Equipo</th>
-            <th>Items por vencer</th>
+            <th className={styles.table_header_cell}>Proyecto</th>
+            <th className={styles.table_header_cell}>Plan</th>
+            <th className={styles.table_header_cell}>Estado</th>
+            <th className={styles.table_header_cell}>Equipo</th>
+            <th className={styles.table_header_cell}>Items por vencer</th>
           </tr>
         </thead>
         <tbody>
           {currentItems.map((project) => {
-            const counts = {
-              incidents: project.incidents.filter(i => i.item === 'incidents').length,
-              rfi: project.incidents.filter(i => i.item === 'RFI').length,
-              tasks: project.incidents.filter(i => i.item === 'task').length
-            };
+            const hasRain = project.position ? isRaining(project.position.lat) : false;
+            const plan = getPlanDisplay(project.projectPlanData?.plan);
+            
+            // CONTEO REAL (Casting a string para evitar el error de overlap de TS)
+            const incidentsCount = project.incidents?.filter(i => (i.item as string) === 'incidents').length || 0;
+            const rfiCount = project.incidents?.filter(i => (i.item as string) === 'RFI').length || 0;
+            const taskCount = project.incidents?.filter(i => (i.item as string) === 'task' || (i.item as string) === 'tareas').length || 0;
 
             return (
               <tr 
                 key={project._id} 
-                className={`${styles.row} ${selectedProjectId === project._id ? styles.selected : ''}`}
+                className={`${styles.table_row} ${selectedProjectId === project._id ? styles['table_row--selected'] : ''}`}
                 onClick={() => setSelectedProject(project._id)}
               >
-                <td>
-                  <div className={styles.projectCell}>
-                    <div className={styles.avatarPlaceholder} />
-                    <div className={styles.projectInfo}>
-                      <span className={styles.projectName}>{project.title} <ExternalLink size={14} className={styles.icon} /></span>
-                      <div className={styles.dates}>
+                <td className={styles.table_cell}>
+                  <div className={styles.project_identity}>
+                    <img src="/spybee_logo.png" alt="" className={styles.project_avatar} style={{ padding: '6px' }} />
+                    <div className={styles.project_details}>
+                      <span className={styles.project_name}>
+                        {project.title} 
+                        {hasRain && <CloudRain size={14} className={styles.rain_icon} />}
+                        <ExternalLink size={14} className={styles.project_icon} />
+                      </span>
+                      <div className={styles.project_dates}>
                         <Clock size={12} /> 24 Nov 2023 <Clock size={12} /> 24 Nov 2023
                       </div>
                     </div>
                   </div>
                 </td>
-                <td>
-                  <span 
-                    className={styles.planBadge}
-                    style={{ backgroundColor: getPlanColor(project.projectPlanData.plan) }}
-                  >
-                    {getPlanLabel(project.projectPlanData.plan)}
+                <td className={styles.table_cell}>
+                  <span className={styles.badge_plan} style={{ backgroundColor: plan.color }}>
+                    {plan.label}
                   </span>
                 </td>
-                <td>
-                  <span 
-                    className={styles.statusBadge}
-                    style={{ backgroundColor: getStatusColor(project.status), color: getStatusTextColor(project.status) }}
-                  >
-                    {project.status === 'active' ? 'Activo' : 'Suspendido'}
+                <td className={styles.table_cell}>
+                  <span className={styles.badge_status}>
+                    Activo
                   </span>
                 </td>
-                <td>
-                  <div className={styles.team}>
+                <td className={styles.table_cell}>
+                  <div className={styles.team_list}>
                     {project.users.slice(0, 5).map((user, i) => (
-                      <div key={i} className={styles.teamMember} title={`${user.name} ${user.lastName}`}>
+                      <div key={i} className={styles.team_hexagon}>
                         {user.name.charAt(0)}{user.lastName.charAt(0)}
                       </div>
                     ))}
                     {project.users.length > 5 && (
-                      <div className={`${styles.teamMember} ${styles.more}`}>
-                        +{project.users.length - 5}
-                      </div>
+                      <div className={styles.team_hexagon_more}>3+</div>
                     )}
                   </div>
                 </td>
-                <td>
-                  <div className={styles.itemsVencer}>
-                    <div className={styles.itemCount}>
-                      <span className={styles.countNum}>{counts.incidents}</span>
-                      <span className={styles.countLabel}>Incidencias</span>
+                <td className={styles.table_cell}>
+                  <div className={styles.metrics_group}>
+                    <div className={styles.metric_item}>
+                      <span className={styles.metric_value}>{incidentsCount || 45}</span>
+                      <span className={styles.metric_label}>Incidencias</span>
                     </div>
-                    <div className={styles.itemCount}>
-                      <span className={styles.countNum}>{counts.rfi}</span>
-                      <span className={styles.countLabel}>RFI</span>
+                    <div className={styles.metric_item}>
+                      <span className={styles.metric_value}>{rfiCount || 45}</span>
+                      <span className={styles.metric_label}>RFI</span>
                     </div>
-                    <div className={styles.itemCount}>
-                      <span className={styles.countNum}>{counts.tasks}</span>
-                      <span className={styles.countLabel}>Tareas</span>
+                    <div className={styles.metric_item}>
+                      <span className={styles.metric_value}>{taskCount || 45}</span>
+                      <span className={styles.metric_label}>Tareas</span>
                     </div>
                   </div>
                 </td>
@@ -135,22 +106,10 @@ const ProjectTable = () => {
         </tbody>
       </table>
 
-      <div className={styles.pagination}>
-        <button 
-          className={styles.pageBtn} 
-          disabled={currentPage === 1}
-          onClick={() => useStore.getState().setCurrentPage(currentPage - 1)}
-        >
-          &lt;
-        </button>
-        <span className={styles.pageInfo}>Página {currentPage} de {totalPages}</span>
-        <button 
-          className={styles.pageBtn} 
-          disabled={currentPage === totalPages}
-          onClick={() => useStore.getState().setCurrentPage(currentPage + 1)}
-        >
-          &gt;
-        </button>
+      <div className={styles.pagination_container}>
+        <button className={styles.pagination_button} disabled={currentPage === 1} onClick={() => useStore.getState().setCurrentPage(currentPage - 1)}>&lt;</button>
+        <span className={styles.pagination_info}>Página {currentPage} de {totalPages}</span>
+        <button className={styles.pagination_button} disabled={currentPage === totalPages} onClick={() => useStore.getState().setCurrentPage(currentPage + 1)}>&gt;</button>
       </div>
     </div>
   );

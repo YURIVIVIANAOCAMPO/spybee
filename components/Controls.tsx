@@ -1,75 +1,75 @@
+"use client";
+
 import React, { useState } from 'react';
 import styles from './Controls.module.css';
-import { Search, List, Grid, Map as MapIcon, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Search, Plus, Filter, List, Grid, MapPin } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { SortOption } from '../types/project';
 
 const Controls = () => {
-  const { searchQuery, setSearchQuery, sortBy, setSortBy, filteredProjects } = useStore();
+  const { searchQuery, setSearchQuery, sortBy, setSortBy, projects } = useStore();
   const [showSort, setShowSort] = useState(false);
 
-  const sortOptions: { label: string; value: SortOption }[] = [
-    { label: 'Orden alfabético', value: 'alphabetical' },
-    { label: 'Número de Incidencias', value: 'incidents' },
-    { label: 'Número de RFI', value: 'rfi' },
-    { label: 'Número de Tareas', value: 'tasks' },
+  const sortOptions: { label: string; value: 'alphabetical' | 'incidents' | 'rfi' | 'tasks' }[] = [
+    { label: 'Orden alfabetico', value: 'alphabetical' },
+    { label: 'Numero de Incidencias', value: 'incidents' },
+    { label: 'Numero de RFI', value: 'rfi' },
+    { label: 'Numero de Tareas', value: 'tasks' },
   ];
 
   return (
-    <div className={styles.container}>
-      <div className={styles.left}>
-        <h1 className={styles.title}>
-          Mis proyectos <span className={styles.badge}>{filteredProjects.length} Proyectos</span>
-        </h1>
+    <div className={styles.controls_container}>
+      <div className={styles.controls_left}>
+        <h1 className={styles.controls_title}>Mis proyectos</h1>
+        <span className={styles.controls_badge}>{projects.length} Proyectos</span>
       </div>
-      
-      <div className={styles.right}>
-        <div className={styles.viewToggle}>
-          <button className={styles.iconBtn}><SlidersHorizontal size={18} /></button>
-          <div className={styles.divider}></div>
-          <button className={styles.iconBtn}><List size={18} /></button>
-          <button className={styles.iconBtn}><Grid size={18} /></button>
-          <button className={styles.iconBtn}><MapIcon size={18} /></button>
-        </div>
 
-        <div className={styles.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Buscar"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-          <Search className={styles.searchIcon} size={18} />
-        </div>
-
-        <div className={styles.sortWrapper}>
-          <button 
-            className={styles.sortBtn}
-            onClick={() => setShowSort(!showSort)}
-          >
-            <SlidersHorizontal size={16} />
-            <ChevronDown size={14} />
+      <div className={styles.controls_right}>
+        {/* Filtro/Sort individual centrado */}
+        <div style={{ position: 'relative' }}>
+          <button className={styles.sort_trigger_btn} onClick={() => setShowSort(!showSort)}>
+             <Filter size={14} />
           </button>
+          
           {showSort && (
-            <div className={styles.dropdown}>
-              {sortOptions.map((opt) => (
-                <button
-                  key={opt.value}
-                  className={`${styles.dropdownItem} ${sortBy === opt.value ? styles.active : ''}`}
-                  onClick={() => {
-                    setSortBy(opt.value);
-                    setShowSort(false);
-                  }}
+            <div className={styles.dropdown_centered}>
+              {sortOptions.map(opt => (
+                <div 
+                  key={opt.value} 
+                  className={styles.dropdown_item} 
+                  onClick={() => { setSortBy(opt.value); setShowSort(false); }}
                 >
                   {opt.label}
-                </button>
+                </div>
               ))}
             </div>
           )}
         </div>
 
-        <button className={styles.createBtn}>+ Crear proyecto</button>
+        {/* View Switcher con colores exactos */}
+        <div className={styles.view_selector_group}>
+          <button className={styles.view_icon_btn}><List size={16} /></button>
+          <div className={styles.v_divider} />
+          <button className={styles.view_icon_btn}><Grid size={16} /></button>
+          <div className={styles.v_divider} />
+          <button className={styles.view_icon_map_active}><MapPin size={16} /></button>
+        </div>
+
+        {/* Buscador Mockup Style */}
+        <div className={styles.search_container_gold}>
+          <input 
+            type="text" 
+            placeholder="Buscar" 
+            className={styles.search_input_field}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <Search size={16} className={styles.search_icon_box} />
+        </div>
+
+        {/* Crear Proyecto */}
+        <button className={styles.create_project_btn}>
+          <Plus size={18} /> Crear proyecto
+        </button>
       </div>
     </div>
   );

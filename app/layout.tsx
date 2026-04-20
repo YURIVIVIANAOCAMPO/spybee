@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
-  title: "Spybee - Mis Proyectos",
-  description: "Gestión de proyectos y seguimiento de incidencias",
+  title: "Spybee - Project Management",
+  description: "Plataforma de gestión de proyectos Spybee",
 };
 
 export default function RootLayout({
@@ -13,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>
+      <body className={inter.className}>
         {children}
       </body>
     </html>

@@ -1,55 +1,54 @@
 .main {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: #fcfcfc;
 }
 
-.content {
+.wrapper {
+  padding: 24px 48px;
   display: flex;
-  padding: 32px;
-  gap: 32px;
-  flex: 1;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
   max-width: 1600px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.leftColumn {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* Important for flex child with overflow content */
+  gap: 20px;
 }
 
-.layoutSwitcher {
-  flex: 1;
-}
-
-.withMap {
-  display: flex;
-  flex-direction: column;
+/* Dashboard Split for Screen 2 */
+.dashboard_split {
+  display: grid;
+  grid-template-columns: 1fr 400px;
   gap: 24px;
+  align-items: start; /* Permite que el summary sea sticky */
 }
 
-.fullWidth {
-  width: 100%;
+.map_container_box {
+  background-color: #eee;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 480px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-.sidebar {
-  width: 400px;
-  flex-shrink: 0;
+.summary_sticky_box {
   position: sticky;
-  top: 96px;
-  height: fit-content;
+  top: 88px; /* Altura del Header + gap */
+  z-index: 10;
+}
+
+.table_section {
+  width: 100%;
+  margin-top: 10px;
 }
 
 @media (max-width: 1200px) {
-  .content {
-    flex-direction: column;
+  .dashboard_split {
+    grid-template-columns: 1fr;
   }
-  
-  .sidebar {
-    width: 100%;
+  .summary_sticky_box {
     position: static;
   }
 }

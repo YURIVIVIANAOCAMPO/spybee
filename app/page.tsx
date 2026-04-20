@@ -16,30 +16,38 @@ export default function Home() {
   const { setProjects, selectedProjectId } = useStore();
 
   useEffect(() => {
+    // Carga inicial de datos desde el JSON proporcionado
     setProjects(mockData as Project[]);
   }, [setProjects]);
-
 
   return (
     <main className={styles.main}>
       <Header />
-      <div className={styles.content}>
-        <div className={styles.leftColumn}>
+      
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
+          
+          {/* Fila 1: Título y Controles (Siempre visibles) */}
           <Controls />
           
-          <div className={styles.layoutSwitcher}>
-            <div className={selectedProjectId ? styles.withMap : styles.fullWidth}>
-               {selectedProjectId && <MapComponent />}
-               <ProjectTable />
+          {/* Fila 2: Dashboard (Solo visible en Pantalla 2 tras selección) */}
+          {selectedProjectId ? (
+            <div className={styles.dashboard_split}>
+                <div className={styles.map_container_box}>
+                  <MapComponent />
+                </div>
+                <div className={styles.summary_sticky_box}>
+                  <Summary />
+                </div>
             </div>
-          </div>
-        </div>
+          ) : null}
 
-        {selectedProjectId && (
-          <aside className={styles.sidebar}>
-            <Summary />
-          </aside>
-        )}
+          {/* Fila 3: Listado de Proyectos (Siempre visible con scroll independiente) */}
+          <div className={styles.table_section}>
+            <ProjectTable />
+          </div>
+
+        </div>
       </div>
     </main>
   );
