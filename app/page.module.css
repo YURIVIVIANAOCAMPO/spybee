@@ -29,6 +29,7 @@
 .table_area {
   flex: 1;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 0;
 }
 
 .table_area_split {
@@ -62,12 +63,50 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-/* Ajustes para pantallas pequeñas */
+/* =============================================
+   RESPONSIVIDAD 100% (Media Queries)
+   ============================================= */
+
+/* TABLETS Y LAPTOPS PEQUEÑAS */
 @media (max-width: 1200px) {
   .table_area_split {
-    flex: 0 0 50%;
+    flex: 0 0 55%;
   }
   .details_area {
-    flex: 0 0 calc(50% - 24px);
+    flex: 0 0 calc(45% - 24px);
+  }
+  .main_layout {
+    padding: 0 20px 20px 20px;
+  }
+}
+
+/* TABLETS VERTICALES (Stack Vertical) */
+@media (max-width: 1024px) {
+  .workspace_wrapper {
+    flex-direction: column;
+  }
+  
+  .table_area_split {
+    flex: 1 1 auto;
+  }
+  
+  .details_area {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  
+  .map_container {
+    height: 400px; /* Más alto en tablets para mejor visibilidad */
+  }
+}
+
+/* MÓVILES */
+@media (max-width: 640px) {
+  .main_layout {
+    padding: 0 10px 10px 10px;
+  }
+  
+  .map_container {
+    height: 250px;
   }
 }

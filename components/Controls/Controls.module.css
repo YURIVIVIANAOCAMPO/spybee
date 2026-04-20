@@ -4,6 +4,15 @@
   align-items: center;
   padding: 20px 0;
   width: 100%;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .controls_container {
+    padding: 15px 0;
+    gap: 15px;
+  }
 }
 
 .title_section {
@@ -32,6 +41,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap; /* Permitir que los botones bajen si no caben */
 }
 
 .filter_wrapper {
@@ -69,10 +79,6 @@
   font-size: 13px;
   color: #444;
   cursor: pointer;
-}
-
-.menu_item:hover {
-  background-color: #f9f9f9;
 }
 
 .view_group {
@@ -136,6 +142,46 @@
   box-shadow: 0 2px 4px rgba(255, 202, 40, 0.2);
 }
 
-.add_button:hover {
-  background-color: var(--spybee-yellow-hover);
+/* =============================================
+   REFINAMIENTO EXCLUSIVO PARA MÓVIL
+   ============================================= */
+@media (max-width: 640px) {
+  .controls_container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .main_title {
+    font-size: 22px;
+  }
+  
+  .actions_section {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  .search_container {
+    width: 100% !important;
+    order: 3; /* Mandar al final del grupo */
+  }
+  
+  .search_input {
+    width: 100% !important;
+  }
+  
+  .add_button {
+    width: 100%;
+    order: 4;
+    justify-content: center;
+  }
+
+  .view_group {
+    order: 1;
+  }
+
+  .filter_wrapper {
+    order: 2;
+  }
 }

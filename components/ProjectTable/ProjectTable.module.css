@@ -2,7 +2,7 @@
   background-color: var(--spybee-white);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  overflow: hidden;
+  overflow-x: auto;
   display: flex;
   flex-direction: column;
 }
@@ -10,6 +10,7 @@
 .table_main {
   width: 100%;
   border-spacing: 0;
+  min-width: 900px;
 }
 
 .table_header_cell {
@@ -188,4 +189,28 @@
 .pagination_info {
   font-size: 13px;
   color: var(--spybee-text-muted);
+}
+
+/* REFINAMIENTOS MÓVIL */
+@media (max-width: 640px) {
+  .table_cell {
+    padding: 10px 8px; /* Menos espacio para ganar visibilidad */
+  }
+
+  .metrics_group {
+    gap: 8px; /* Más pegados en móvil */
+  }
+
+  .metric_value {
+    font-size: 14px;
+  }
+  
+  .metric_label {
+    font-size: 8px;
+  }
+
+  .project_avatar {
+    width: 32px;
+    height: 32px;
+  }
 }

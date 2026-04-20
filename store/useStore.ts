@@ -9,6 +9,7 @@ interface AppState {
   sortBy: 'alphabetical' | 'incidents' | 'rfi' | 'tasks';
   currentPage: number;
   itemsPerPage: number;
+  viewMode: 'list' | 'map' | 'grid';
   
   // Map State
   mapCenter: [number, number];
@@ -20,6 +21,7 @@ interface AppState {
   setSearchQuery: (query: string) => void;
   setSortBy: (sort: 'alphabetical' | 'incidents' | 'rfi' | 'tasks') => void;
   setCurrentPage: (page: number) => void;
+  setViewMode: (mode: 'list' | 'map' | 'grid') => void;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -30,6 +32,7 @@ export const useStore = create<AppState>((set, get) => ({
   sortBy: 'alphabetical',
   currentPage: 1,
   itemsPerPage: 10,
+  viewMode: 'map',
   
   mapCenter: [-74.1558, 4.6738], // Centro por defecto (Bogotá)
   mapZoom: 12,
@@ -76,4 +79,5 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   setCurrentPage: (page) => set({ currentPage: page }),
+  setViewMode: (mode) => set({ viewMode: mode }),
 }));

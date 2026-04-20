@@ -7,6 +7,18 @@
   padding: 0 40px;
   color: var(--spybee-white);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 0 15px;
+  }
+  .user_role {
+    display: none; /* Simplificar en movil */
+  }
 }
 
 .header_content {
