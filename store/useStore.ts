@@ -1,5 +1,22 @@
 import { create } from 'zustand';
-import { Project } from '../types/project';
+import { persist, createJSONStorage } from 'zustand/middleware';
+
+interface Project {
+  _id: string;
+  title: string;
+  status: string;
+  lastVisit: string;
+  img: string;
+  projectPlanData?: {
+    plan: string;
+  };
+  position: {
+    lat: number;
+    lng: number;
+  };
+  users: Array<{ name: string; lastName: string }>;
+  incidents: Array<{ item: string; description: string }>;
+}
 
 interface AppState {
   projects: Project[];
@@ -27,63 +44,72 @@ interface AppState {
   logout: () => void;
 }
 
-export const useStore = create<AppState>((set, get) => ({
-  projects: [],
-  filteredProjects: [],
-  selectedProjectId: null,
-  searchQuery: '',
-  sortBy: 'alphabetical',
-  currentPage: 1,
-  itemsPerPage: 10,
-  viewMode: 'map',
-  isAuthenticated: false,
-  
-  mapCenter: [-74.1558, 4.6738], // Centro por defecto (Bogotá)
-  mapZoom: 12,
+export const useStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      projects: [],
+      filteredProjects: [],
+      selectedProjectId: null,
+      searchQuery: '',
+      sortBy: 'alphabetical',
+      currentPage: 1,
+      itemsPerPage: 10,
+      viewMode: 'map',
+      isAuthenticated: false,
+      
+      mapCenter: [-74.1558, 4.6738],
+      mapZoom: 12,
 
-  setProjects: (projects) => {
-    set({ projects, filteredProjects: projects });
-    get().setSearchQuery(get().searchQuery); // Aplicar filtros iniciales
-  },
+      setProjects: (projects) => {
+        set({ projects, filteredProjects: projects });
+        get().setSearchQuery(get().searchQuery);
+      },
 
-  setSelectedProject: (projectId) => {
-    const project = get().projects.find((p) => p._id === projectId);
-    if (project && project.position) {
-      set({ 
-        selectedProjectId: projectId,
-        mapCenter: [project.position.lng, project.position.lat],
-        mapZoom: 15
-      });
-    } else {
-      set({ selectedProjectId: projectId });
+      setSelectedProject: (projectId) => {
+        const project = get().projects.find(p => p._id === projectId);
+        if (project && project.position) {
+          set({ 
+            selectedProjectId: projectId,
+            mapCenter: [project.position.lng, project.position.lat],
+            mapZoom: 15
+          });
+        } else {
+          set({ selectedProjectId: projectId });
+        }
+      },
+
+      setSearchQuery: (query) => {
+        const { projects, sortBy } = get();
+        let filtered = projects.filter(p => 
+          p.title.toLowerCase().includes(query.toLowerCase())
+        );
+
+        // Aplicar ordenamiento
+        if (sortBy === 'alphabetical') filtered.sort((a, b) => a.title.localeCompare(b.title));
+        if (sortBy === 'incidents') filtered.sort((a, b) => (b.incidents?.filter(i => i.item === 'incidents').length || 0) - (a.incidents?.filter(i => i.item === 'incidents').length || 0));
+        if (sortBy === 'rfi') filtered.sort((a, b) => (b.incidents?.filter(i => i.item === 'RFI').length || 0) - (a.incidents?.filter(i => i.item === 'RFI').length || 0));
+        if (sortBy === 'tasks') filtered.sort((a, b) => (b.incidents?.filter(i => i.item === 'task' || i.item === 'tareas').length || 0) - (a.incidents?.filter(i => i.item === 'task' || i.item === 'tareas').length || 0));
+
+        set({ searchQuery: query, filteredProjects: filtered, currentPage: 1 });
+      },
+
+      setSortBy: (sort) => {
+        set({ sortBy: sort });
+        get().setSearchQuery(get().searchQuery);
+      },
+
+      setCurrentPage: (page) => set({ currentPage: page }),
+      setViewMode: (mode) => set({ viewMode: mode }),
+      login: () => set({ isAuthenticated: true }),
+      logout: () => set({ isAuthenticated: false, selectedProjectId: null }),
+    }),
+    {
+      name: 'spybee-auth-storage', // Nombre de la llave en LocalStorage
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ 
+        isAuthenticated: state.isAuthenticated,
+        viewMode: state.viewMode 
+      }), // Solo persistimos lo que queremos que se guarde tras F5
     }
-  },
-
-  setSearchQuery: (query) => {
-    const { projects, sortBy } = get();
-    let filtered = projects.filter(p => 
-      p.title.toLowerCase().includes(query.toLowerCase())
-    );
-
-    // Aplicar ordenamiento
-    filtered = [...filtered].sort((a, b) => {
-      if (sortBy === 'alphabetical') return a.title.localeCompare(b.title);
-      if (sortBy === 'incidents') return (b.incidents?.filter(i => i.item === 'incidents').length || 0) - (a.incidents?.filter(i => i.item === 'incidents').length || 0);
-      if (sortBy === 'rfi') return (b.incidents?.filter(i => i.item === 'RFI').length || 0) - (a.incidents?.filter(i => i.item === 'RFI').length || 0);
-      if (sortBy === 'tasks') return (b.incidents?.filter(i => i.item === 'task').length || 0) - (a.incidents?.filter(i => i.item === 'task').length || 0);
-      return 0;
-    });
-
-    set({ searchQuery: query, filteredProjects: filtered, currentPage: 1 });
-  },
-
-  setSortBy: (sort) => {
-    set({ sortBy: sort });
-    get().setSearchQuery(get().searchQuery); // Re-filtrar y ordenar
-  },
-
-  setCurrentPage: (page) => set({ currentPage: page }),
-  setViewMode: (mode) => set({ viewMode: mode }),
-  login: () => set({ isAuthenticated: true }),
-  logout: () => set({ isAuthenticated: false, selectedProjectId: null }),
-}));
+  )
+);

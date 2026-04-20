@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header/Header';
 import Controls from '../components/Controls/Controls';
 import ProjectTable from '../components/ProjectTable/ProjectTable';
@@ -13,12 +13,18 @@ import styles from './page.module.css';
 
 export default function Home() {
   const { setProjects, selectedProjectId, isAuthenticated } = useStore();
+  const [hasHydrated, setHasHydrated] = useState(false);
 
+  // Evitar error de hidratación en Next.js al usar LocalStorage
   useEffect(() => {
+    setHasHydrated(true);
     setProjects(mockData as any);
   }, [setProjects]);
 
-  // Si no está autenticado, mostrar pantalla de Login
+  if (!hasHydrated) {
+    return <div style={{ backgroundColor: '#333333', minHeight: '100vh' }} />;
+  }
+
   if (!isAuthenticated) {
     return <Login />;
   }
